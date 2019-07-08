@@ -18,7 +18,7 @@ PsychDefaultSetup(2);
 
 % Skip sync tests for this demo in case people are using a defective
 % system. This is for demo purposes only.
-% Screen('Preference', 'SkipSyncTests', 2);
+Screen('Preference', 'SkipSyncTests', 2);
 
 % Setup Psychtoolbox for OpenGL 3D rendering support and initialize the
 % mogl OpenGL for Matlab wrapper
@@ -53,25 +53,12 @@ squareDimPix = screenXpix / 2;
 squareHalfDimPix = squareDimPix / 2;
 
 % Number of dots
-% numDots = 500;
 numDots = 1;
 
 % Dot base position in pixels for the left and right eye. As you will see
 % the vertical do positions will be the same in both cases.
-% dotPosXleft = (rand(1, numDots) .* 2 - 1) .* squareHalfDimPix;
-% dotPosYleft = (rand(1, numDots) .* 2 - 1) .* squareHalfDimPix;
-dotPosXleft = [-1 0 1 -1 0 1 -1 0 1] .* squareHalfDimPix;
+dotPosXleft = [-1 0 1 1 0 -1 -1 0 1] .* squareHalfDimPix;
 dotPosYleft = [-1 -1 -1 0 0 0 1 1 1] .* squareHalfDimPix;
-% dotPosXright = dotPosXleft;
-% dotPosYright = dotPosYleft;
-
-% To shift the square in depth we need to shift the square by equal and
-% opposite amounts in the left and right eyes. To make the square appear
-% in front of the screen we need to shift the left eyes image to the right
-% and the right eyes image to the left
-% shifterPix = 10;
-% dotPosXleft = dotPosXleft + shifterPix;
-% dotPosXright = dotPosXright - shifterPix;
 
 % Dot diameter in pixels
 dotDiaPix = 20;
@@ -106,8 +93,9 @@ for i = 1:9
         pause(1);
         
         % Now draw our left eyes dots
-            Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [1 0 1], [screenXpix / 2 screenYpix / 2], 2);
+        Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
+        [1 0 1], [screenXpix / 2 screenYpix / 2], 2);
+        
         % Flip to the screen
         Screen('Flip', window);
         
