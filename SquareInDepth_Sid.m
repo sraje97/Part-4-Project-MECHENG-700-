@@ -60,20 +60,18 @@ numDots = 1;
 % the vertical do positions will be the same in both cases.
 % dotPosXleft = (rand(1, numDots) .* 2 - 1) .* squareHalfDimPix;
 % dotPosYleft = (rand(1, numDots) .* 2 - 1) .* squareHalfDimPix;
-% dotPosXleft = [0 0 0 -1 -1 -1 1 1 1] .* 500;
-% dotPosYleft = [0 1 -1 0 1 -1 0 1 -1] .* 500;
-dotPosXleft = 0;
-dotPosYleft = 0;
-%dotPosXright = dotPosXleft;
-%dotPosYright = dotPosYleft;
+dotPosXleft = [-1 0 1 -1 0 1 -1 0 1] .* 500;
+dotPosYleft = [-1 -1 -1 0 0 0 1 1 1] .* 500;
+% dotPosXright = dotPosXleft;
+% dotPosYright = dotPosYleft;
 
 % To shift the square in depth we need to shift the square by equal and
 % opposite amounts in the left and right eyes. To make the square appear
 % in front of the screen we need to shift the left eyes image to the right
 % and the right eyes image to the left
-%shifterPix = 10;
-%dotPosXleft = dotPosXleft + shifterPix;
-%dotPosXright = dotPosXright - shifterPix;
+% shifterPix = 10;
+% dotPosXleft = dotPosXleft + shifterPix;
+% dotPosXright = dotPosXright - shifterPix;
 
 % Dot diameter in pixels
 dotDiaPix = 20;
@@ -90,29 +88,49 @@ dotDiaPix = 20;
 % Select left-eye image buffer for drawing (buffer = 0)
 Screen('SelectStereoDrawBuffer', window, 0);
 
-% Now draw our left eyes dots
-Screen('DrawDots', window, [dotPosXleft; dotPosYleft], dotDiaPix,...
-    [1 0 0], [screenXpix / 2 screenYpix / 2], 2);
+for i = 1:9
+    for j = 1:2
+        if mod(j,2) == 0
+            % Now draw our left eyes dots
+            Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
+            [1 0 0], [screenXpix / 2 screenYpix / 2], 2);
+        else
+            % Now draw our left eyes dots
+            Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
+            [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
+        end
+        % Flip to the screen
+        Screen('Flip', window);
+        
+        % Wait for a button press to exit the demo
+        pause(1);
+    end
+    KbWait;
+end
 
-% Select right-eye image buffer for drawing (buffer = 1)
-% Screen('SelectStereoDrawBuffer', window, 1);
-
-% Now draw our right eyes dots
-% Screen('DrawDots', window, [dotPosXright; dotPosYright], dotDiaPix,...
+% % Now draw our left eyes dots
+% Screen('DrawDots', window, [dotPosXleft; dotPosYleft], dotDiaPix,...
+%     [1 0 0], [screenXpix / 2 screenYpix / 2], 2);
+% 
+% % Select right-eye image buffer for drawing (buffer = 1)
+% % Screen('SelectStereoDrawBuffer', window, 1);
+% 
+% % Now draw our right eyes dots
+% % Screen('DrawDots', window, [dotPosXright; dotPosYright], dotDiaPix,...
+% %     [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
+% 
+% % Flip to the screen
+% Screen('Flip', window);
+% 
+% % Wait for a button press to exit the demo
+% pause(2); 
+% 
+% % Now draw our left eyes dots
+% Screen('DrawDots', window, [dotPosXleft; dotPosYleft], dotDiaPix,...
 %     [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
-
-% Flip to the screen
-Screen('Flip', window);
-
-% Wait for a button press to exit the demo
-pause(2); 
-
-% Now draw our left eyes dots
-Screen('DrawDots', window, [dotPosXleft; dotPosYleft], dotDiaPix,...
-    [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
-
-% Flip to the screen
-Screen('Flip', window);
+% 
+% % Flip to the screen
+% Screen('Flip', window);
 
 KbWait;
 sca;
