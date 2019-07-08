@@ -46,7 +46,7 @@ Screen('BlendFunction', window, 'GL_SRC_ALPHA', 'GL_ONE_MINUS_SRC_ALPHA');
 
 % Set the size of the square to be a fraction of the screen size. This will
 % give us similar results on any demo system hopefully
-squareDimPix = screenXpix ;
+squareDimPix = screenXpix / 2;
 
 % For ease will will position dots +/- half of this size i.e. centered
 % around zero. When we draw to the screen we center the dots automatically.
@@ -60,8 +60,8 @@ numDots = 1;
 % the vertical do positions will be the same in both cases.
 % dotPosXleft = (rand(1, numDots) .* 2 - 1) .* squareHalfDimPix;
 % dotPosYleft = (rand(1, numDots) .* 2 - 1) .* squareHalfDimPix;
-dotPosXleft = [-1 0 1 -1 0 1 -1 0 1] .* 500;
-dotPosYleft = [-1 -1 -1 0 0 0 1 1 1] .* 500;
+dotPosXleft = [-1 0 1 -1 0 1 -1 0 1] .* squareHalfDimPix;
+dotPosYleft = [-1 -1 -1 0 0 0 1 1 1] .* squareHalfDimPix;
 % dotPosXright = dotPosXleft;
 % dotPosYright = dotPosYleft;
 
@@ -112,7 +112,7 @@ for i = 1:9
         Screen('Flip', window);
         
         % Wait for a button press to exit the demo
-        pause(1);
+        pause(0.5);
     end
 %     KbWait;
 end
