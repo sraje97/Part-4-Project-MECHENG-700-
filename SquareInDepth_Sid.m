@@ -18,7 +18,7 @@ PsychDefaultSetup(2);
 
 % Skip sync tests for this demo in case people are using a defective
 % system. This is for demo purposes only.
-Screen('Preference', 'SkipSyncTests', 2);
+% Screen('Preference', 'SkipSyncTests', 2);
 
 % Setup Psychtoolbox for OpenGL 3D rendering support and initialize the
 % mogl OpenGL for Matlab wrapper
@@ -104,33 +104,18 @@ for i = 1:9
         
         % Wait for a button press to exit the demo
         pause(1);
+        
+        % Now draw our left eyes dots
+            Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
+            [1 0 1], [screenXpix / 2 screenYpix / 2], 2);
+        % Flip to the screen
+        Screen('Flip', window);
+        
+        % Wait for a button press to exit the demo
+        pause(1);
     end
-    KbWait;
+%     KbWait;
 end
-
-% % Now draw our left eyes dots
-% Screen('DrawDots', window, [dotPosXleft; dotPosYleft], dotDiaPix,...
-%     [1 0 0], [screenXpix / 2 screenYpix / 2], 2);
-% 
-% % Select right-eye image buffer for drawing (buffer = 1)
-% % Screen('SelectStereoDrawBuffer', window, 1);
-% 
-% % Now draw our right eyes dots
-% % Screen('DrawDots', window, [dotPosXright; dotPosYright], dotDiaPix,...
-% %     [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
-% 
-% % Flip to the screen
-% Screen('Flip', window);
-% 
-% % Wait for a button press to exit the demo
-% pause(2); 
-% 
-% % Now draw our left eyes dots
-% Screen('DrawDots', window, [dotPosXleft; dotPosYleft], dotDiaPix,...
-%     [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
-% 
-% % Flip to the screen
-% Screen('Flip', window);
 
 KbWait;
 sca;
