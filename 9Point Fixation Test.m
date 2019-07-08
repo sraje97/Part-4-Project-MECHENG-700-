@@ -18,7 +18,7 @@ PsychDefaultSetup(2);
 
 % Skip sync tests for this demo in case people are using a defective
 % system. This is for demo purposes only.
-% Screen('Preference', 'SkipSyncTests', 2);
+Screen('Preference', 'SkipSyncTests', 2);
 
 % Setup Psychtoolbox for OpenGL 3D rendering support and initialize the
 % mogl OpenGL for Matlab wrapper
