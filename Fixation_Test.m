@@ -28,7 +28,7 @@ InitializeMatlabOpenGL;
 screenid = max(Screen('Screens'));
 
 % Open the main window
-[window, windowRect] = PsychImaging('OpenWindow', screenid, [1 0 1]); %,...
+[window, windowRect] = PsychImaging('OpenWindow', screenid, [1 0 1 0]); %,...
 %     [], 32, 2, stereoMode);
 
 % Show cleared start screen:
