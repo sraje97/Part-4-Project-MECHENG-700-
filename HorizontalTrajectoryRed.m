@@ -29,6 +29,9 @@ black = BlackIndex(screenNumber);
 % Choose the RGB intensity (for all RGB vectors)
 colourLevel = 1;
 
+% Size of Square
+maxLimit = 500;
+
 % Open an on screen window and color it purple
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, [colourLevel, 0, colourLevel]);
 % Get the size of the on screen window in pixels
@@ -55,8 +58,8 @@ numDots = numel(x);
 % Make the matrix of positions for the dots into two vectors
 % xPosVector = reshape(x, 1, numDots);
 % yPosVector = reshape(y, 1, numDots);
-xPosVector = -500;
-yPosVector = -500;
+xPosVector = maxLimit*-1;
+yPosVector = maxLimit*-1;
 
 % We can define a center for the dot coordinates to be relaitive to. Here
 % we set the centre to be the centre of the screen
@@ -97,9 +100,6 @@ speed = 5;
 
 % Direction to move in (1 = Right, 2 = Left, 3 = Down, 4 = Up)
 direction = 1;
-
-% Size of Square
-maxLimit = 500;
 
 % Blue Dot
 for i = 1:3
@@ -149,7 +149,7 @@ for i = 1:3
 
         if (direction == 2) && (xPosVector <= (maxLimit*-1)) && (yPosVector == 0)
             direction = 1;
-            yPosVector = 500;
+            yPosVector = maxLimit;
             pointReached = true;
             pause(0.5);
         end
