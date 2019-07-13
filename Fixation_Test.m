@@ -27,8 +27,11 @@ InitializeMatlabOpenGL;
 % Get the screen number
 screenid = max(Screen('Screens'));
 
+% Choose RGB intensity (for all RGB vectors)
+ColourLevel = 0.5;
+
 % Open the main window
-[window, windowRect] = PsychImaging('OpenWindow', screenid, [1 0 1 0]); %,...
+[window, windowRect] = PsychImaging('OpenWindow', screenid, [ColourLevel 0 ColourLevel 0]); %,...
 %     [], 32, 2, stereoMode);
 
 % Show cleared start screen:
@@ -80,11 +83,11 @@ for i = 1:9
         if mod(j,2) == 0
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [1 0 0], [screenXpix / 2 screenYpix / 2], 2);
+            [ColourLevel 0 0], [screenXpix / 2 screenYpix / 2], 2);
         else
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [0 0 1], [screenXpix / 2 screenYpix / 2], 2);
+            [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
         end
         % Flip to the screen
         Screen('Flip', window);
@@ -94,13 +97,15 @@ for i = 1:9
         
         % Now draw our left eyes dots
         Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-        [1 0 1], [screenXpix / 2 screenYpix / 2], 2);
+        [ColourLevel 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
         
         % Flip to the screen
         Screen('Flip', window);
         
         % Wait for a button press to exit the demo
         pause(0.5);
+        
+%         KbCheck;
     end
 %     KbWait;
 end

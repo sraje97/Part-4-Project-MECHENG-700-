@@ -26,8 +26,11 @@ screenNumber = max(screens);
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 
-% Open an on screen window and color it black
-[window, windowRect] = PsychImaging('OpenWindow', screenNumber, [0.5 0 0.5 0]);
+% Choose the RGB intensity (for all RGB vectors)
+colourLevel = 1;
+
+% Open an on screen window and color it purple
+[window, windowRect] = PsychImaging('OpenWindow', screenNumber, [colourLevel 0 colourLevel]);
 % Get the size of the on screen window in pixels
 [screenXpixels, screenYpixels] = Screen('WindowSize', window);
 
@@ -50,8 +53,10 @@ y = 1;
 numDots = numel(x);
 
 % Make the matrix of positions for the dots into two vectors
-xPosVector = reshape(x, 1, numDots);
-yPosVector = reshape(y, 1, numDots);
+% xPosVector = reshape(x, 1, numDots);
+% yPosVector = reshape(y, 1, numDots);
+xPosVector = 10;
+yPosVector = 0;
 
 % We can define a center for the dot coordinates to be relaitive to. Here
 % we set the centre to be the centre of the screen
@@ -59,7 +64,7 @@ dotCenter = [screenXpixels / 2 screenYpixels / 2];
 
 % Set the color of our dot to be random
 % dotColors = rand(3, numDots);
-dotColors = [0 1 0];
+dotColors = [0 colourLevel 0];
 
 % Set the size of the dots randomly between 10 and 30 pixels
 % dotSizes = round(rand(1, numDots) .* 20);
@@ -68,8 +73,8 @@ dotSizes = 20;
 % Our grid will oscilate with a sine wave function to the left and right
 % of the screen. These are the parameters for the sine wave
 % See: http://en.wikipedia.org/wiki/Sine_wave
-amplitude = screenYpixels * 0.25;
-frequency = 0.2;
+amplitude = screenYpixels * 0.5;
+frequency = 0.1;
 angFreq = 2 * pi * frequency;
 startPhase = 0;
 time = 0;
@@ -82,16 +87,73 @@ waitframes = 1;
 topPriorityLevel = MaxPriority(window);
 Priority(topPriorityLevel);
 
+% Distance to increment
+gridXPos = 0;
+gridYPos = 0;
+
+% Increment Speed
+speed = 5;
+
+% Direction to move in (1 = Right, 2 = Left, 3 = Down, 4 = Up)
+direction = 1;
+
+% Size of Square
+maxLimit = 500;
+
 % Loop the animation until a key is pressed
 while ~KbCheck
 
     % Position of the square on this frame
-    gridPos = amplitude * sin(angFreq * time + startPhase);
+%     gridPos = amplitude * sin(angFreq * time + startPhase);
 
+    % Move Right (until 500)
+    if (direction == 1) && (xPosVector <= maxLimit)
+        xPosVector = xPosVector + speed;
+        yPosVector = yPosVector;
+    end
+    % Move Left (until -500)
+    if (direction == 2) && (xPosVector >= (maxLimit*-1))
+        xPosVector = xPosVector - speed;
+        yPosVector = yPosVector;
+    end
+    
+    % Move Down (until 500)
+    if (direction == 3) && (yPosVector <= maxLimit)
+        xPosVector = xPosVector;
+        yPosVector = yPosVector + speed;
+    end
+
+    % Move Up (until -500)
+    if (direction == 4) && (yPosVector >= (maxLimit*-1))
+        xPosVector = xPosVector;
+        yPosVector = yPosVector - speed;
+    end
+    
     % Draw all of our dots to the screen in a single line of code adding
     % the sine oscilation to the X coordinates of the dots
-    [minSmoothPointSize, maxSmoothPointSize, minAliasedPointSize, maxAliasedPointSize] = Screen('DrawDots', window, [xPosVector + gridPos; yPosVector], dotSizes, dotColors, dotCenter, 2);
-
+    [minSmoothPointSize, maxSmoothPointSize, minAliasedPointSize, maxAliasedPointSize] = Screen('DrawDots', window, [xPosVector + gridXPos; yPosVector + gridYPos], dotSizes, dotColors, dotCenter, 2);
+    
+    % Change direction if maxlimit reached
+    if (direction == 1) && (xPosVector >= maxLimit)
+        direction = 3;
+        pause(0.1);
+    end
+    
+    if (direction == 2) && (xPosVector <= (maxLimit*-1))
+        direction = 4;
+        pause(0.1);
+    end
+    
+    if (direction == 3) && (yPosVector >= maxLimit)
+        direction = 2;
+        pause(0.1);
+    end
+    
+    if (direction == 4) && (yPosVector <= (maxLimit*-1))
+        direction = 1;
+        pause(0.1);
+    end
+    
     % Flip to the screen
     vbl  = Screen('Flip', window, vbl + (waitframes - 0.5) * ifi);
 
