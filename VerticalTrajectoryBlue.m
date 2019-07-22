@@ -144,7 +144,7 @@ for i = 1:3
             pause(0.5);
         end
 
-        if (direction == 3) && (yPosVector >= maxLimit) && (xPosVector == 500)
+        if (direction == 3) && (yPosVector >= maxLimit) && (xPosVector == maxLimit)
             pause(0.5);
             pointReached = true;
             speed = 0;
