@@ -1,25 +1,28 @@
-clear;
+% clear;
 clc;
+clf;
 
-% Opening bdf file and reading data
+filename = 'FixationTestData_Lucy2207.bdf';
 
-% RUN FIRST to get header structure of bdf file
-[hdr] = read_biosemi_bdf('FixationTestDataFilter_Sid1207.bdf')
+%gets header structure of bdf file
+[hdr] = read_biosemi_bdf(filename);
 
-% Enter number of samples (eg. 69632) provided by header structure
-% Use channel 272 for EyeX
-[rawX] = read_biosemi_bdf('FixationTestDataFilter_Sid1207.bdf', hdr, 1, 69632, 272);
+% Required format for reading data per channel
+%[dat] = read_biosemi_bdf('filename.bdf'), hdr, startindex, finalindex, channelindex);
 
-% use channel 273 for EyeY
-[rawY] = read_biosemi_bdf('FixationTestDataFilter_Sid1207.bdf', hdr, 1, 69632, 273) .* 2.18;
+%272 for EyeX
+[rawX] = read_biosemi_bdf(filename, hdr, 1, hdr.nSamples, 272);
 
-% Moving Average Filter
+%273 for EyeY
+[rawY] = read_biosemi_bdf(filename, hdr, 1, hdr.nSamples, 273) .* 2.18;
+
 stepSize = 100;
 averagedValues = floor(length(rawX) / stepSize);
 
 dataX = zeros(1,averagedValues);
 dataY = zeros(1,averagedValues);
 
+% Compute moving average filter across 100 samples
 for i = 1:averagedValues
     sumValuesX = sum(rawX(i*stepSize-(stepSize-1):i*stepSize));
     averageX = sumValuesX / stepSize;
@@ -31,16 +34,6 @@ for i = 1:averagedValues
     dataY(i) = averageY;
 end
 
-% Discard initial/final sensor noise/outliers
-dataX = dataX(1:675);
-dataY = dataY(1:675);
-
-% Eye tracking data plot 
-figure;
+% scatter(rawX,rawY);
 scatter(dataX,dataY);
-axis equal;
-axis square;
-title('Tracking Data from Fixation Test with Filters');
-ylabel('Vertical Displacement (Gain Adjusted) [uV]');
-xlabel('Horizontal Displacement [uV]');
 
