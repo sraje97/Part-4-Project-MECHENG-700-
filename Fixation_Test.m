@@ -77,6 +77,7 @@ dotDiaPix = 20;
 
 % Select left-eye image buffer for drawing (buffer = 0)
 Screen('SelectStereoDrawBuffer', window, 0);
+pause(5);
 
 for i = 1:9
     for j = 1:6
