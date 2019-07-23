@@ -1,6 +1,6 @@
 % clear;
 clc;
-clf;
+% clf;
 [filename,folder] = uigetfile('*.bdf');
 
 % filename = 'Testdata_Sid2207.bdf';
@@ -37,4 +37,10 @@ end
 
 % scatter(rawX,rawY);
 scatter(dataX,dataY);
+axis square;
+axis equal;
 
+figure;
+plot(dataX);
+hold on
+plot(dataY);
