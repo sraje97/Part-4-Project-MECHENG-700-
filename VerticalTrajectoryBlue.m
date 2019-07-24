@@ -30,7 +30,7 @@ black = BlackIndex(screenNumber);
 colourLevel = 1;
 
 % Size of Square
-maxLimit = 500;
+maxLimit = 350;
 
 % Open an on screen window and color it purple
 [window, windowRect] = PsychImaging('OpenWindow', screenNumber, [colourLevel, 0, colourLevel]);

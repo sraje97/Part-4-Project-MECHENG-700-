@@ -77,6 +77,12 @@ dotDiaPix = 20;
 
 % Select left-eye image buffer for drawing (buffer = 0)
 Screen('SelectStereoDrawBuffer', window, 0);
+
+Screen('DrawDots', window, [dotPosXleft(5); dotPosYleft(5)], dotDiaPix,...
+[0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
+
+% Flip to the screen
+Screen('Flip', window);
 pause(5);
 
 for i = 1:9
@@ -113,4 +119,3 @@ end
 
 % KbWait;
 sca;
-  

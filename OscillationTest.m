@@ -77,40 +77,24 @@ dotDiaPix = 20;
 
 % Select left-eye image buffer for drawing (buffer = 0)
 Screen('SelectStereoDrawBuffer', window, 0);
-pause(5);
+pause(4);
 
-for i = 1:9
-    for j = 1:6
-        if mod(j,2) == 0
-            % Now draw our left eyes dots
-            Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [ColourLevel 0 0], [screenXpix / 2 screenYpix / 2], 2);
-        else
-            % Now draw our left eyes dots
-            Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
-        end
-        % Flip to the screen
-        Screen('Flip', window);
-        
-        % Wait for a button press to exit the demo
-        pause(1);
-        
-%         % Now draw our left eyes dots
-%         Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-%         [ColourLevel 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
-%         
-%         % Flip to the screen
-%         Screen('Flip', window);
-%         
-%         % Wait for a button press to exit the demo
-% %         pause(0.5);
-        
-%         KbCheck;
+for j = 1:10
+    if mod(j,2) == 0
+        % Now draw our left eyes dots
+        Screen('DrawDots', window, [dotPosXleft(5); dotPosYleft(5)], dotDiaPix,...
+        [ColourLevel 0 0], [screenXpix / 2 screenYpix / 2], 2);
+    else
+        % Now draw our left eyes dots
+        Screen('DrawDots', window, [dotPosXleft(5); dotPosYleft(5)], dotDiaPix,...
+        [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
     end
-%     KbWait;
+    % Flip to the screen
+    Screen('Flip', window);
+
+    % Wait for a button press to exit the demo
+    pause(1);
 end
 
 % KbWait;
 sca;
-  
