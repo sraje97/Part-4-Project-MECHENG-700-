@@ -78,15 +78,29 @@ dotDiaPix = 20;
 % Select left-eye image buffer for drawing (buffer = 0)
 Screen('SelectStereoDrawBuffer', window, 0);
 
-Screen('DrawDots', window, [dotPosXleft(5); dotPosYleft(5)], dotDiaPix,...
-[0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
+% Calibration Section
+calDotPosX = [-1 1 1 -1] .*squareHalfDimPix;
+calDotPosY = [-1 -1 1 1] .*squareHalfDimPix;
+for i = 1:4
+    Screen('DrawDots', window, [calDotPosX(i); calDotPosY(i)], dotDiaPix,...
+    [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
+
+    % Flip to the screen
+    Screen('Flip', window);
+    pause(2);
+end
+
+% Clear Screen
+Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
+[0 ColourLevel 0], [screenXpix / 2 screenYpix / 2], 2);
 
 % Flip to the screen
 Screen('Flip', window);
-pause(5);
+pause(1); 
 
+% Fixation Section
 for i = 1:9
-    for j = 1:6
+    for j = 1:2
         if mod(j,2) == 0
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
