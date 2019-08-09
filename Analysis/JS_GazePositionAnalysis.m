@@ -17,6 +17,8 @@ clc;
 %273 for EyeY
 [rawY] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, 273) .* 2.18;
 
+[trig] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, 281);
+
 stepSize = 100;
 averagedValues = floor(length(rawX) / stepSize);
 
@@ -52,3 +54,6 @@ figure;
 plot(Z,dataX);
 hold on
 plot(Z,dataY);
+
+trig_0 = mod(trig,2);
+plot(trig_0);

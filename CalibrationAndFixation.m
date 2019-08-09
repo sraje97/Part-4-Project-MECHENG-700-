@@ -31,7 +31,7 @@ screenid = max(Screen('Screens'));
 ColourLevel = 1;
 
 % Open the main window
-[window, windowRect] = PsychImaging('OpenWindow', screenid, [ColourLevel 0 ColourLevel 0]); %,...
+[window, windowRect] = PsychImaging('OpenWindow', screenid, [ColourLevel 0 ColourLevel]); %,...
 %     [], 32, 2, stereoMode);
 
 % Show cleared start screen:
@@ -64,7 +64,7 @@ dotPosXleft = [-1 0 1 1 0 -1 -1 0 1] .* squareHalfDimPix;
 dotPosYleft = [-1 -1 -1 0 0 0 1 1 1] .* squareHalfDimPix;
 
 % Dot diameter in pixels
-dotDiaPix = 20;
+dotDiaPix = 10;
 
 %------------------------
 % Drawing to the screen
@@ -81,10 +81,18 @@ Screen('SelectStereoDrawBuffer', window, 0);
 % Calibration Section
 calDotPosX = [-1 1 1 -1] .*squareHalfDimPix;
 calDotPosY = [-1 -1 1 1] .*squareHalfDimPix;
+
+
+baseRect = [0 0 200 200];
+centeredRect = CenterRectOnPointd(baseRect, 0, 0);
+
 for i = 1:4
     Screen('DrawDots', window, [calDotPosX(i); calDotPosY(i)], dotDiaPix,...
-    [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
+    [0 0 0], [screenXpix / 2 screenYpix / 2], 2);
 
+    % Draw black box on top left
+    Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+    
     % Flip to the screen
     Screen('Flip', window);
     pause(2);
@@ -92,44 +100,42 @@ end
 
 % Clear Screen
 Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
-[0 ColourLevel 0], [screenXpix / 2 screenYpix / 2], 2);
+[0 0 0], [screenXpix / 2 screenYpix / 2], 2);
+
+% Draw black box on top left
+Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
 
 % Flip to the screen
 Screen('Flip', window);
-pause(1); 
+pause(4); 
 
 % Fixation Section
-for i = 1:9
-    for j = 1:2
+for i = 1:2
+    for j = 1:6
         if mod(j,2) == 0
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
             [ColourLevel 0 0], [screenXpix / 2 screenYpix / 2], 2);
+            
+            % Draw magenta box in top left
+            Screen('FillRect', window, [ColourLevel 0 ColourLevel], centeredRect);
         else
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
             [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
+            
+            % Draw black box on top left
+            Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
         end
+        
         % Flip to the screen
         Screen('Flip', window);
         
         % Wait for a button press to exit the demo
         pause(1);
         
-%         % Now draw our left eyes dots
-%         Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-%         [ColourLevel 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
-%         
-%         % Flip to the screen
-%         Screen('Flip', window);
-%         
-%         % Wait for a button press to exit the demo
-% %         pause(0.5);
-        
-%         KbCheck;
     end
-%     KbWait;
+
 end
 
-% KbWait;
 sca;

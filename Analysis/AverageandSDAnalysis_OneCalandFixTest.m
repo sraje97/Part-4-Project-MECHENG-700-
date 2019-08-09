@@ -4,8 +4,8 @@
 calValX = rawX(1:10240);
 calValY = rawY(1:10240);
 
-rawX2 = rawX(2049:end);
-rawY2 = rawY(2049:end);
+rawX2 = rawX(10241:end);
+rawY2 = rawY(10241:end);
 
 % Average and spread of the calibration test
 avgcalX = mean(calValX);
@@ -38,5 +38,5 @@ end
 
 figure;
 scatter(avgmatrix(:,1),avgmatrix(:,2));
-% hold on
-% scatter(avgcalX, avgcalY);
+hold on
+scatter(avgcalX, avgcalY);
