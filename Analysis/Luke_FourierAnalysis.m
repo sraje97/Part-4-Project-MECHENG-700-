@@ -11,7 +11,7 @@ rawY_ = rawY_(1:(cutTime*sFreq));
 aFrawX_ = abs(fft(rawX_)/length(rawX_));
 aFrawY_ = abs(fft(rawY_)/length(rawY_));
 
-FAXIS = (1/30)*(0:(length(aFrawX_)-1));
+FAXIS = (1/cutTime)*(0:(length(aFrawX_)-1));
 
 figure;
 hold on; 

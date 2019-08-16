@@ -31,7 +31,7 @@ screenid = max(Screen('Screens'));
 ColourLevel = 1;
 
 % Open the main window
-[window, windowRect] = PsychImaging('OpenWindow', screenid, [ColourLevel 0 ColourLevel]); %,...
+[window, windowRect] = PsychImaging('OpenWindow', screenid, [0 0 0]); %,...
 %     [], 32, 2, stereoMode);
 
 % Show cleared start screen:
@@ -88,9 +88,8 @@ centeredRect = CenterRectOnPointd(baseRect, 0, 0);
 
 for i = 1:4
     Screen('DrawDots', window, [calDotPosX(i); calDotPosY(i)], dotDiaPix,...
-    [0 0 0], [screenXpix / 2 screenYpix / 2], 2);
+    [1 1 1], [screenXpix / 2 screenYpix / 2], 2);
 
-    % Draw black box on top left
     Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
     
     % Flip to the screen
@@ -102,40 +101,34 @@ end
 Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
 [0 0 0], [screenXpix / 2 screenYpix / 2], 2);
 
-% Draw black box on top left
 Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
 
 % Flip to the screen
 Screen('Flip', window);
-pause(4); 
+pause(4);
 
 % Fixation Section
-for i = 1:2
+for i = 1:9
     for j = 1:6
         if mod(j,2) == 0
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [ColourLevel 0 0], [screenXpix / 2 screenYpix / 2], 2);
+            [ColourLevel*0.25 0 0], [screenXpix / 2 screenYpix / 2], 2);
             
-            % Draw magenta box in top left
-            Screen('FillRect', window, [ColourLevel 0 ColourLevel], centeredRect);
+            Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
         else
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [0 0 ColourLevel], [screenXpix / 2 screenYpix / 2], 2);
+            [0 0 ColourLevel*0.25], [screenXpix / 2 screenYpix / 2], 2);
             
-            % Draw black box on top left
-            Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+            Screen('FillRect', window, [ColourLevel ColourLevel ColourLevel], centeredRect);
         end
-        
         % Flip to the screen
         Screen('Flip', window);
         
         % Wait for a button press to exit the demo
-        pause(1);
-        
+        pause(0.5);
+
     end
-
 end
-
 sca;
