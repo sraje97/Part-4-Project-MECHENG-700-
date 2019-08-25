@@ -79,19 +79,42 @@ dotDiaPix = 10;
 Screen('SelectStereoDrawBuffer', window, 0);
 
 % Calibration Section
-calDotPosX = [-1 1 1 -1] .*squareHalfDimPix;
-calDotPosY = [-1 -1 1 1] .*squareHalfDimPix;
-
+calDotPosX = [1 1 -1 -1] .*squareHalfDimPix;
+calDotPosY = [-1 1 1 -1] .*squareHalfDimPix;
 
 baseRect = [0 0 200 200];
 centeredRect = CenterRectOnPointd(baseRect, 0, 0);
 
+for i = 1:6
+    if (mod(i,2) == 0)
+        Screen('DrawDots', window, [calDotPosX(1); calDotPosY(1)], dotDiaPix,...
+        [0 0 0], [screenXpix / 2 screenYpix / 2], 2);
+
+        % Flip to the screen
+        Screen('Flip', window);
+        pause(0.5);
+    else
+        Screen('DrawDots', window, [calDotPosX(1); calDotPosY(1)], dotDiaPix,...
+        [1 1 1], [screenXpix / 2 screenYpix / 2], 2);
+
+        % Flip to the screen
+        Screen('Flip', window);
+        pause(0.5);
+    end
+    
+end
+
+% Calibration 4-point Test
 for i = 1:4
     Screen('DrawDots', window, [calDotPosX(i); calDotPosY(i)], dotDiaPix,...
     [1 1 1], [screenXpix / 2 screenYpix / 2], 2);
-
-    Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
     
+    % Flash trigger upon start up
+    if (i == 1)
+        Screen('FillRect', window, [ColourLevel ColourLevel ColourLevel], centeredRect);
+    else
+        Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+    end
     % Flip to the screen
     Screen('Flip', window);
     pause(2);
@@ -100,12 +123,18 @@ end
 % Clear Screen
 Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
 [0 0 0], [screenXpix / 2 screenYpix / 2], 2);
-
 Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
-
 % Flip to the screen
 Screen('Flip', window);
 pause(4);
+
+% White Dot
+Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
+[1 1 1], [screenXpix / 2 screenYpix / 2], 2);
+Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+% Flip to the screen
+Screen('Flip', window);
+pause(2);
 
 % Fixation Section
 for i = 1:9
@@ -113,13 +142,13 @@ for i = 1:9
         if mod(j,2) == 0
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [ColourLevel*0.25 0 0], [screenXpix / 2 screenYpix / 2], 2);
+            [ColourLevel*0.40 0 0], [screenXpix / 2 screenYpix / 2], 2);
             
             Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
         else
-            % Now draw our left eyes dots
+            % Now draw our left     eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [0 0 ColourLevel*0.25], [screenXpix / 2 screenYpix / 2], 2);
+            [0 0 ColourLevel*0.40], [screenXpix / 2 screenYpix / 2], 2);
             
             Screen('FillRect', window, [ColourLevel ColourLevel ColourLevel], centeredRect);
         end

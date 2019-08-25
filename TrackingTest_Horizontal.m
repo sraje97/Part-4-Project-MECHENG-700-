@@ -45,8 +45,8 @@ calDotPosY = [0 0] .*amplitude;
 
 dotYpos = 0;
 dotSizes = 6;
-dotColoursBlue = [0 0 colourLevel*0.25];
-dotColoursRed = [colourLevel*0.25 0 0];
+dotColoursBlue = [0 0 colourLevel*0.40];
+dotColoursRed = [colourLevel*0.40 0 0];
 
 % Sync us and get a time stamp
 vbl = Screen('Flip', window);

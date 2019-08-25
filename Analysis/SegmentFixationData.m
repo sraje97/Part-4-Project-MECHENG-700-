@@ -1,4 +1,4 @@
-function [cal, data] = SegmentData(rawX, rawY, trig_0)
+function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
     fs = 2048;
     calSegStart = 800;
     calSegEnd = 3328;
