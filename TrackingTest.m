@@ -44,7 +44,7 @@ calDotPosY = [0 0] .*amplitude;
 
 dotYpos = 0;
 dotXpos = amplitude * sin(angFreq * time + startPhase);
-dotSizes = 15;
+dotSizes = 6;
 dotColoursBlue = [0 0 colourLevel*0.40];
 dotColoursRed = [colourLevel*0.40 0 0];
 
@@ -60,6 +60,26 @@ baseRect = [0 0 200 200];
 centeredRect = CenterRectOnPointd(baseRect, 0, 0);
 
 %% START HORIZONTAL
+
+for i = 1:6
+    if (mod(i,2) == 0)
+        Screen('DrawDots', window, [calDotPosX(1); calDotPosY(1)], dotSizes,...
+        [0 0 0], [screenXpixels / 2 screenYpixels / 2], 2);
+
+        % Flip to the screen
+        Screen('Flip', window);
+        pause(0.5);
+    else
+        Screen('DrawDots', window, [calDotPosX(1); calDotPosY(1)], dotSizes,...
+        [1 1 1], [screenXpixels / 2 screenYpixels / 2], 2);
+
+        % Flip to the screen
+        Screen('Flip', window);
+        pause(0.5);
+    end
+    
+end
+
 
 % Draw White Dot to screen
 Screen('DrawDots', window, [dotXpos; dotYpos], dotSizes, [1 1 1], dotCenter, 2);
