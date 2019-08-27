@@ -36,18 +36,18 @@ function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
         end
         fixStartIndex = fixIndices(1);
         
-        if i == 9
-            data9(1,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+5000);
-            data9(1,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+5000);
-            padding = length(data(1,:,1)) - length(data9(1,:,1));
-            data9 = padarray(data9,[0,padding],'post');
-        else
+%         if i == 9
+%             data9(1,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+5000);
+%             data9(1,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+5000);
+%             padding = length(data(1,:,1)) - length(data9(1,:,1));
+%             data9 = padarray(data9,[0,padding],'post');
+%         else
             data(i,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
             data(i,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
-        end
+%         end
     end
     
-    data = [data ; data9];
+%     data = [data ; data9];
     
     % DEBUG: Plot Fixation points
     figure; hold on;

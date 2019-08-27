@@ -24,7 +24,7 @@ close all;
 
 trig_0 = mod(trig,2);
 
-%% Filter raw data
+%% Average raw data in sample size
 stepSize = 100;
 averagedValues = floor(length(rawX) / stepSize);
 
@@ -47,18 +47,20 @@ end
 %% Fixation or Tracking Test
 if (filename(1:8) == "Fixation")
     disp('Fixation Calibration function here');
+%     [cal, data] = SegmentFixationData(rawX, rawY, trig_0);
     disp('Mean and SD function here');
     disp('Oscillation and FFT function here');
     disp('Plots and Results function here');
     
 elseif (filename(1:8) == "Tracking")
     disp('Tracking Calibration function here');
+%     [cal, data] = SegmentTrackingData(rawX, rawY, trig_0);
     disp('Gain and Phase function here');
     disp('Plots and Results function here');
     
 else
     disp('Please choose Tracking or Fixation file.');
-    return
+    return;
 end
 
 

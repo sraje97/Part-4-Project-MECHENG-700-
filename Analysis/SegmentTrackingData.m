@@ -1,17 +1,18 @@
-function [cal, data_Hor] = SegmentTrackingData(rawX, rawY, trig_0)
-    %% Calibration Points
+function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
     fs = 2048;
-    
-    calSegStart = 800;
+
+%% Calibration Points Horizontal
+  
+    calSegStart = 1024;
     calSegEnd = 3328;
     calPointDuration = 4096;
     
-    trigIndices = find(trig_0 == 1);
-%     calIndex = trigIndices(1) + 2048; 
-    calIndex = trigIndices(1);
-    % Add 2048 to ignore the extra 1 sec of white dot before calibration actually starts
+    trigIndices = find(trig_0(1000:end) == 1) + 1000;
+    calIndex = trigIndices(1) + 2048;
+    % Add 2048 to discard the 1st one second from White Square
+    disp(calIndex);
     
-    cal = zeros(2,calSegEnd-calSegStart+1,2);
+    cal = zeros(4,calSegEnd-calSegStart+1,2);
     for i = 1:2
         cal(i,:,1) = rawX((calIndex+(i-1)*calPointDuration)+calSegStart : (calIndex+(i-1)*calPointDuration)+calSegEnd);
         cal(i,:,2) = rawY((calIndex+(i-1)*calPointDuration)+calSegStart : (calIndex+(i-1)*calPointDuration)+calSegEnd);        
@@ -19,19 +20,14 @@ function [cal, data_Hor] = SegmentTrackingData(rawX, rawY, trig_0)
     
     calEndIndex = (calIndex+2*calPointDuration);
     
-    % DEBUG: Plot calibration points
-    figure; hold on;
-    for iDot = 1:2
-        scatter(cal(iDot,:,1),cal(iDot,:,2))
-    end
+    %% Tracking Test Horizontal
     
-    %% Tracking Test   
     trackDuration = floor(2*fs*(1/.12)); % Two cycles
     trackSegStart = 0;
-    trackSegEnd = trackDuration - 512;
+    trackSegEnd = trackDuration - 512-432;
     breakTime = fs*5;
     
-    data_Hor = zeros(2,trackSegEnd-trackSegStart+1,2);
+    data = zeros(4,trackSegEnd-trackSegStart+1,2);
     
     for i = 1:2
         if i == 1
@@ -43,15 +39,64 @@ function [cal, data_Hor] = SegmentTrackingData(rawX, rawY, trig_0)
         end
         trackStartIndex = trackIndices(1);
         
-        data_Hor(i,:,1) = rawX(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
-        data_Hor(i,:,2) = rawY(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+        data(i,:,1) = rawX(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+        data(i,:,2) = rawY(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+    end
+    
+    trackEndIndex = trackStartIndex + trackDuration + breakTime;
+    
+%% Calibration Points Vertical
+
+%     calIndex = trackEndIndex; % KEEP FOR FINAL!
+    calIndex = 110338; % USE FOR MICHAEL's TEST
+
+    trigIndices = find(trig_0(calIndex:end) == 1) + calIndex;
+    calIndex = trigIndices(1) + 2048;
+    % Add 2048 to discard the 1st one second from White Square
+    disp(calIndex);
+    
+    for i = 1:2
+        cal(i+2,:,1) = rawX((calIndex+(i-1)*calPointDuration)+calSegStart : (calIndex+(i-1)*calPointDuration)+calSegEnd);
+        cal(i+2,:,2) = rawY((calIndex+(i-1)*calPointDuration)+calSegStart : (calIndex+(i-1)*calPointDuration)+calSegEnd);        
+    end
+    
+    % DEBUG: Plot calibration points
+    figure; hold on;
+    for iDot = 1:4
+        scatter(cal(iDot,:,1),cal(iDot,:,2))
+    end
+    axis square;
+    
+    calEndIndex = (calIndex+2*calPointDuration);
+    
+%% Tracking Test Vertical
+    
+    for i = 1:2
+        if i == 1
+            find_StartPoint = calEndIndex;
+            trackIndices = find(trig_0(find_StartPoint : end) == 1) + find_StartPoint;
+        else
+            find_StartPoint = trackStartIndex + trackDuration + breakTime;
+            trackIndices = find(trig_0(find_StartPoint : find_StartPoint+trackDuration) == 1) + find_StartPoint;
+        end
+        trackStartIndex = trackIndices(1);
+        
+        if i == 1
+            data(i+2,:,1) = rawX(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+            data(i+2,:,2) = rawY(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+        else
+            data(i+2,:,1) = rawX(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+            data(i+2,:,2) = rawY(trackStartIndex+trackSegStart : trackStartIndex+trackSegEnd);
+%             data(i+2,:,1) = rawX(trackStartIndex+trackSegStart : end);
+%             data(i+2,:,2) = rawY(trackStartIndex+trackSegStart : end);
+        end
     end
     
     % DEBUG: Plot Horizontal Tracking data
     figure; hold on;
-    for iDot = 1:2
-        scatter(data_Hor(iDot,:,1),data_Hor(iDot,:,2))
+    for iDot = 1:4
+        scatter(data(iDot,:,1),data(iDot,:,2))
     end
-    
+    axis square;
 end
 
