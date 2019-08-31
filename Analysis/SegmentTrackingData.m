@@ -1,14 +1,14 @@
 function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
-    fs = 2048;
+    fs = 2048/2;
 
 %% Calibration Points Horizontal
   
-    calSegStart = 1024;
-    calSegEnd = 3328;
-    calPointDuration = 4096;
+    calSegStart = 1024/2;
+    calSegEnd = 3328/2;
+    calPointDuration = 4096/2;
     
-    trigIndices = find(trig_0(1000:end) == 1) + 1000;
-    calIndex = trigIndices(1) + 2048;
+    trigIndices = find(trig_0(1000/2:end) == 1) + 1000/2;
+    calIndex = trigIndices(1) + fs;
     % Add 2048 to discard the 1st one second from White Square
     disp(calIndex);
     
@@ -24,7 +24,7 @@ function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
     
     trackDuration = floor(2*fs*(1/.12)); % Two cycles
     trackSegStart = 0;
-    trackSegEnd = trackDuration - 512-432;
+    trackSegEnd = trackDuration - 512;
     breakTime = fs*5;
     
     data = zeros(4,trackSegEnd-trackSegStart+1,2);
@@ -48,10 +48,10 @@ function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
 %% Calibration Points Vertical
 
 %     calIndex = trackEndIndex; % KEEP FOR FINAL!
-    calIndex = 110338; % USE FOR MICHAEL's TEST
+    calIndex = 110338/2; % USE FOR MICHAEL's TEST
 
     trigIndices = find(trig_0(calIndex:end) == 1) + calIndex;
-    calIndex = trigIndices(1) + 2048;
+    calIndex = trigIndices(1) + fs;
     % Add 2048 to discard the 1st one second from White Square
     disp(calIndex);
     
@@ -63,7 +63,7 @@ function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
     % DEBUG: Plot calibration points
     figure; hold on;
     for iDot = 1:4
-        scatter(cal(iDot,:,1),cal(iDot,:,2))
+        scatter(cal(iDot,:,1),cal(iDot,:,2),10,'black');
     end
     axis square;
     
@@ -93,9 +93,9 @@ function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
     end
     
     % DEBUG: Plot Horizontal Tracking data
-    figure; hold on;
+%     figure; hold on;
     for iDot = 1:4
-        scatter(data(iDot,:,1),data(iDot,:,2))
+        scatter(data(iDot,:,1),data(iDot,:,2),10);
     end
     axis square;
 end

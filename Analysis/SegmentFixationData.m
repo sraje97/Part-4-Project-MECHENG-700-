@@ -1,8 +1,8 @@
-function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
-    fs = 2048;
-    calSegStart = 800;
-    calSegEnd = 3328;
-    calPointDuration = 4096;
+    function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
+    fs = 2048/2;
+    calSegStart = 800/2;
+    calSegEnd = 3328/2;
+    calPointDuration = fs*2;
     
     trigIndices = find(trig_0 == 1);
     calIndex = trigIndices(1);
@@ -16,12 +16,13 @@ function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
     % DEBUG: Plot calibration points
     figure; hold on;
     for iDot = 1:4
-        scatter(cal(iDot,:,1),cal(iDot,:,2))
+        scatter(cal(iDot,:,1),cal(iDot,:,2), 10, 'b')
     end
+    axis square;
     
-    calEndIndex = (calIndex+3*calPointDuration)+calSegEnd + 8191;    
+    calEndIndex = (calIndex+3*calPointDuration)+calSegEnd + 8192/2;    
     fixDuration = fs*3;
-    fixSegStart = 768;
+    fixSegStart = 768/2;
     fixSegEnd = fixDuration - 512;
 
     data = zeros(9,fixSegEnd-fixSegStart+1,2);
@@ -32,7 +33,7 @@ function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
             fixIndices = find(trig_0(find_StartPoint : end) == 1) + find_StartPoint;
         else
             find_StartPoint = fixDuration + fixStartIndex;
-            fixIndices = find(trig_0(find_StartPoint : find_StartPoint+5000) == 1) + find_StartPoint;
+            fixIndices = find(trig_0(find_StartPoint : find_StartPoint+(5000/2)) == 1) + find_StartPoint;
         end
         fixStartIndex = fixIndices(1);
         
@@ -50,8 +51,13 @@ function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
 %     data = [data ; data9];
     
     % DEBUG: Plot Fixation points
-    figure; hold on;
+%     figure; hold on;
     for iDot = 1:9
-        scatter(data(iDot,:,1),data(iDot,:,2))
+        scatter(data(iDot,:,1),data(iDot,:,2), 10, 'r')
     end
+    axis square;
+    xlabel('X Position (uV)');
+    ylabel('Y Position (uV)');
+    title('Calibration vs Fixation Points');
+%     legend('Calibration Data', 'Fixation Data');
 end

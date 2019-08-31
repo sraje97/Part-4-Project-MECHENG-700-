@@ -24,19 +24,23 @@ close all;
 
 trig_0 = mod(trig,2);
 
+rawX_f = rawX(1:2:end);
+rawY_f = rawY(1:2:end);
+trig_0_f = trig_0(1:2:end);
+
 %% Average raw data in sample size
 stepSize = 100;
-averagedValues = floor(length(rawX) / stepSize);
+averagedValues = floor(length(rawX_f) / stepSize);
 
 dataX = zeros(1,averagedValues);
 dataY = zeros(1,averagedValues);
 
 % Compute moving average filter across 100 samples
 for i = 1:averagedValues
-    sumValuesX = sum(rawX(i*stepSize-(stepSize-1):i*stepSize));
+    sumValuesX = sum(rawX_f(i*stepSize-(stepSize-1):i*stepSize));
     averageX = sumValuesX / stepSize;
     
-    sumValuesY = sum(rawY(i*stepSize-(stepSize-1):i*stepSize));
+    sumValuesY = sum(rawY_f(i*stepSize-(stepSize-1):i*stepSize));
     averageY = sumValuesY / stepSize;
     
     dataX(i) = averageX;
@@ -47,46 +51,51 @@ end
 %% Fixation or Tracking Test
 if (filename(1:8) == "Fixation")
     disp('Fixation Calibration function here');
-%     [cal, data] = SegmentFixationData(rawX, rawY, trig_0);
+%     [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f);
     disp('Mean and SD function here');
     disp('Oscillation and FFT function here');
     disp('Plots and Results function here');
     
 elseif (filename(1:8) == "Tracking")
     disp('Tracking Calibration function here');
-%     [cal, data] = SegmentTrackingData(rawX, rawY, trig_0);
+%     [cal, data] = SegmentTrackingData(rawX_f, rawY_f, trig_0_f);
     disp('Gain and Phase function here');
     disp('Plots and Results function here');
     
 else
     disp('Please choose Tracking or Fixation file.');
-    return;
+%     return;
 end
 
 
 %% Plot results
 figure;
 fs = 2048;
-fs_1 = 2048/stepSize;
+fs_1 = fs/stepSize;
 
-Zraw = 0:1/fs:(length(rawX)-1)/fs;
-scatter3(rawX,rawY, Zraw, 10, Zraw);
+fs_f = 1024;
+fs_1_f = fs_f/stepSize;
+
+Zraw_f = 0:1/fs_f:(length(rawX_f)-1)/fs_f;
+scatter3(rawX_f,rawY_f, Zraw_f, 10, Zraw_f);
 colormap(jet);
 colorbar;
 axis square;
-xlabel('X');
-ylabel('Y');
+xlabel('X Position (uV)');
+ylabel('Y Position (uV)');
+title('Raw X vs Y Displacement Data');
 view(0,90);
 
 % scatter(dataX,dataY);
 figure;
-Z = 0:1/fs_1:(length(dataX)-1)/fs_1;
+Z = 0:1/fs_1_f:(length(dataX)-1)/fs_1_f;
 scatter3(dataX,dataY,Z,10,Z);
 colormap(jet);
 colorbar;
 axis square;
-xlabel('X');
-ylabel('Y');
+xlabel('X Position (uV)');
+ylabel('Y Position (uV)');
+title('X vs Y Displacement Data');
 view(0,90);
 
 figure;
@@ -95,4 +104,4 @@ hold on
 plot(Z,dataY);
 
 figure;
-plot(trig_0);
+plot(trig_0_f);
