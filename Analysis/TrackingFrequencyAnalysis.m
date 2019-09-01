@@ -21,3 +21,4 @@ function [amplitude,phase] = TrackingFrequencyAnalysis(data)
     plot(f_axis(2:end),phase);
 %     axis([0 1 ylim]);
     linkaxes(ax,'x');
+end
