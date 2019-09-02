@@ -50,15 +50,15 @@ end
 
 %% Fixation or Tracking Test
 if (filename(1:8) == "Fixation")
-    disp('Fixation Calibration function here');
-%     [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f);
-    disp('Mean and SD function here');
+    [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f);
+    [calMSD, dataMSD] = MeanSD(cal, data);
+    [horDist, verDist] = CalibrationDistance(calMSD);
     disp('Oscillation and FFT function here');
     disp('Plots and Results function here');
     
 elseif (filename(1:8) == "Tracking")
+    [cal, data] = SegmentTrackingData(rawX_f, rawY_f, trig_0_f);
     disp('Tracking Calibration function here');
-%     [cal, data] = SegmentTrackingData(rawX_f, rawY_f, trig_0_f);
     disp('Gain and Phase function here');
     disp('Plots and Results function here');
     

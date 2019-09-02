@@ -1,8 +1,8 @@
     function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
-    fs = 2048/2;
-    calSegStart = 800/2;
-    calSegEnd = 3328/2;
-    calPointDuration = fs*2;
+    fs = 1024;
+    calSegStart = 512; % Skip 1/2 second from start
+    calSegEnd = 1792; % Leave out 1/4 second from end in case pre-anticipated
+    calPointDuration = fs*2; % Duration of calibration point
     
     trigIndices = find(trig_0 == 1);
     calIndex = trigIndices(1);
@@ -20,10 +20,10 @@
     end
     axis square;
     
-    calEndIndex = (calIndex+3*calPointDuration)+calSegEnd + 8192/2;    
+    calEndIndex = (calIndex+3*calPointDuration)+calSegEnd + 4096;    
     fixDuration = fs*3;
-    fixSegStart = 768/2;
-    fixSegEnd = fixDuration - 512;
+    fixSegStart = 512; % Skip 1/2 second from start
+    fixSegEnd = fixDuration - 512; % Skip 1/2 second from the end in case pre-anticipation
 
     data = zeros(9,fixSegEnd-fixSegStart+1,2);
 

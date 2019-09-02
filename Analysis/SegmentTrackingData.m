@@ -1,13 +1,13 @@
 function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
-    fs = 2048/2;
+    fs = 1024;
 
 %% Calibration Points Horizontal
   
-    calSegStart = 1024/2;
-    calSegEnd = 3328/2;
-    calPointDuration = 4096/2;
+    calSegStart = 512;
+    calSegEnd = 1664;
+    calPointDuration = 2048;
     
-    trigIndices = find(trig_0(1000/2:end) == 1) + 1000/2;
+    trigIndices = find(trig_0(500:end) == 1) + 500;
     calIndex = trigIndices(1) + fs;
     % Add 2048 to discard the 1st one second from White Square
     disp(calIndex);
@@ -48,7 +48,7 @@ function [cal, data] = SegmentTrackingData(rawX, rawY, trig_0)
 %% Calibration Points Vertical
 
 %     calIndex = trackEndIndex; % KEEP FOR FINAL!
-    calIndex = 110338/2; % USE FOR MICHAEL's TEST
+    calIndex = 55169; % USE FOR MICHAEL's TEST
 
     trigIndices = find(trig_0(calIndex:end) == 1) + calIndex;
     calIndex = trigIndices(1) + fs;
