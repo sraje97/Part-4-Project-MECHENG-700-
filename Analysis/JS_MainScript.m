@@ -1,6 +1,6 @@
 clear;
 clc;
-close all;
+% close all;
 
 %% Load File and Extract Data
 [filename,folder] = uigetfile('*.bdf');
@@ -53,13 +53,13 @@ if (filename(1:8) == "Fixation")
     [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f);
     [calMSD, dataMSD] = MeanSD(cal, data);
     [horDist, verDist] = CalibrationDistance(calMSD);
-    disp('Oscillation and FFT function here');
+    FixationFourierAnalysis(data,9);
     disp('Plots and Results function here');
     
 elseif (filename(1:8) == "Tracking")
     [cal, data] = SegmentTrackingData(rawX_f, rawY_f, trig_0_f);
-    disp('Tracking Calibration function here');
-    disp('Gain and Phase function here');
+    [calMSD, dataMSD] = MeanSD(cal, data);
+    TrackingFrequencyAnalysisPlot(cal,data);
     disp('Plots and Results function here');
     
 else
@@ -86,7 +86,6 @@ ylabel('Y Position (uV)');
 title('Raw X vs Y Displacement Data');
 view(0,90);
 
-% scatter(dataX,dataY);
 figure;
 Z = 0:1/fs_1_f:(length(dataX)-1)/fs_1_f;
 scatter3(dataX,dataY,Z,10,Z);

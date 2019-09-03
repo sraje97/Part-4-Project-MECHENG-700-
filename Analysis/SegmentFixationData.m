@@ -1,6 +1,6 @@
     function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
     fs = 1024;
-    calSegStart = 512; % Skip 1/2 second from start
+    calSegStart = 768; % Skip 3/4 second from start
     calSegEnd = 1792; % Leave out 1/4 second from end in case pre-anticipated
     calPointDuration = fs*2; % Duration of calibration point
     
@@ -13,7 +13,7 @@
         cal(i,:,2) = rawY((calIndex+(i-1)*calPointDuration)+calSegStart:(calIndex+(i-1)*calPointDuration)+calSegEnd);        
     end
     
-    % DEBUG: Plot calibration points
+    % Plot calibration points
     figure; hold on;
     for iDot = 1:4
         scatter(cal(iDot,:,1),cal(iDot,:,2), 10, 'b')
@@ -35,29 +35,18 @@
             find_StartPoint = fixDuration + fixStartIndex;
             fixIndices = find(trig_0(find_StartPoint : find_StartPoint+(5000/2)) == 1) + find_StartPoint;
         end
-        fixStartIndex = fixIndices(1);
         
-%         if i == 9
-%             data9(1,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+5000);
-%             data9(1,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+5000);
-%             padding = length(data(1,:,1)) - length(data9(1,:,1));
-%             data9 = padarray(data9,[0,padding],'post');
-%         else
-            data(i,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
-            data(i,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
-%         end
+        fixStartIndex = fixIndices(1);
+        data(i,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
+        data(i,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
     end
     
-%     data = [data ; data9];
-    
-    % DEBUG: Plot Fixation points
-%     figure; hold on;
+    % Plot Fixation points
     for iDot = 1:9
         scatter(data(iDot,:,1),data(iDot,:,2), 10, 'r')
     end
     axis square;
-    xlabel('X Position (uV)');
-    ylabel('Y Position (uV)');
+    xlabel('X Position (au)');
+    ylabel('Y Position (au)');
     title('Calibration vs Fixation Points');
-%     legend('Calibration Data', 'Fixation Data');
 end

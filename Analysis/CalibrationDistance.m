@@ -7,7 +7,7 @@ function [horDist, verDist] = CalibrationDistance(calMSD)
     % Horizontal (X pos) distance between calibration point 1 and 4 (px)
     horDist = calMSD(1,1,1) - calMSD(4,1,1);
     
-    % 237mm horizontal and 195mm vertical
+    % 237mm horizontal and 195mm vertical gives mm/px value
     verDist = 195/verDist;
     horDist = 237/horDist;
 end
