@@ -113,17 +113,17 @@ for i = 1:4
     if (i == 1)
         Screen('FillRect', window, [ColourLevel ColourLevel ColourLevel], centeredRect);
     else
-        Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+        Screen('FillRect', window, [0 0 0], centeredRect);
     end
     % Flip to the screen
     Screen('Flip', window);
-    pause(2);
+    pause(3);
 end
 
 % Clear Screen
 Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
 [0 0 0], [screenXpix / 2 screenYpix / 2], 2);
-Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+Screen('FillRect', window, [0 0 0], centeredRect);
 % Flip to the screen
 Screen('Flip', window);
 pause(4);
@@ -131,24 +131,24 @@ pause(4);
 % White Dot
 Screen('DrawDots', window, [dotPosXleft(1); dotPosYleft(1)], dotDiaPix,...
 [1 1 1], [screenXpix / 2 screenYpix / 2], 2);
-Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+Screen('FillRect', window, [0 0 0], centeredRect);
 % Flip to the screen
 Screen('Flip', window);
 pause(2);
 
 % Fixation Section
 for i = 1:9
-    for j = 1:6
+    for j = 1:20
         if mod(j,2) == 0
             % Now draw our left eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [ColourLevel*0.40 0 0], [screenXpix / 2 screenYpix / 2], 2);
+            [ColourLevel*0.30 0 0], [screenXpix / 2 screenYpix / 2], 2);
             
-            Screen('FillRect', window, [0.2 0.2 0.2], centeredRect);
+            Screen('FillRect', window, [0 0 0], centeredRect);
         else
             % Now draw our left     eyes dots
             Screen('DrawDots', window, [dotPosXleft(i); dotPosYleft(i)], dotDiaPix,...
-            [0 0 ColourLevel*0.40], [screenXpix / 2 screenYpix / 2], 2);
+            [0 0 ColourLevel*0.5], [screenXpix / 2 screenYpix / 2], 2);
             
             Screen('FillRect', window, [ColourLevel ColourLevel ColourLevel], centeredRect);
         end
