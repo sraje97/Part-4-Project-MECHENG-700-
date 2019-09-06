@@ -1,4 +1,4 @@
-clear;
+% clear;
 clc;
 % close all;
 
@@ -14,13 +14,13 @@ clc;
 %[dat] = read_biosemi_bdf('filename.bdf'), hdr, startindex, finalindex, channelindex);
 
 % 272 or 40 for EyeX
-[rawX] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, hdr.nChans-9);
+[rawX] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, find(strcmp(hdr.label,"EyeX")));
 
 % 273 or 41 for EyeY
-[rawY] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, hdr.nChans-8);
+[rawY] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, find(strcmp(hdr.label,"EyeY")));
 
 % Status channel for trigger
-[trig] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, hdr.nChans);
+[trig] = read_biosemi_bdf([folder,filename], hdr, 1, hdr.nSamples, find(strcmp(hdr.label,"Status")));
 
 trig_0 = mod(trig,2);
 
@@ -81,8 +81,8 @@ scatter3(rawX_f,rawY_f, Zraw_f, 10, Zraw_f);
 colormap(jet);
 colorbar;
 axis square;
-xlabel('X Position (uV)');
-ylabel('Y Position (uV)');
+xlabel('X Position (au)');
+ylabel('Y Position (au)');
 title('Raw X vs Y Displacement Data');
 view(0,90);
 
@@ -92,15 +92,15 @@ scatter3(dataX,dataY,Z,10,Z);
 colormap(jet);
 colorbar;
 axis square;
-xlabel('X Position (uV)');
-ylabel('Y Position (uV)');
+xlabel('X Position (au)');
+ylabel('Y Position (au)');
 title('X vs Y Displacement Data');
 view(0,90);
 
 figure;
-plot(Z,dataX);
+plot(Zraw_f,rawX_f);
 hold on
-plot(Z,dataY);
+plot(Zraw_f,rawY_f);
 
 figure;
 plot(trig_0_f);

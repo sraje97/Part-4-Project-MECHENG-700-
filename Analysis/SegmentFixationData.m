@@ -1,8 +1,8 @@
     function [cal, data] = SegmentFixationData(rawX, rawY, trig_0)
     fs = 1024;
     calSegStart = 768; % Skip 3/4 second from start
-    calSegEnd = 1792; % Leave out 1/4 second from end in case pre-anticipated
-    calPointDuration = fs*2; % Duration of calibration point
+    calSegEnd = 2560; % Leave out 1/4 second from end in case pre-anticipated
+    calPointDuration = fs*3; % Duration of calibration point
     
     trigIndices = find(trig_0 == 1);
     calIndex = trigIndices(1);
@@ -20,13 +20,14 @@
     end
     axis square;
     
-    calEndIndex = (calIndex+3*calPointDuration)+calSegEnd + 4096;    
-    fixDuration = fs*3;
-    fixSegStart = 512; % Skip 1/2 second from start
-    fixSegEnd = fixDuration - 512; % Skip 1/2 second from the end in case pre-anticipation
+    calEndIndex = (calIndex+3*calPointDuration)+calSegEnd + 4096; 
+    fixDuration = fs*10;
+    fixSegStart = 1024; % Skip 1 second from start
+    fixSegEnd = fixDuration - 1024; % Skip 1/2 second from the end in case pre-anticipation
 
     data = zeros(9,fixSegEnd-fixSegStart+1,2);
-
+    fixStartIndices = [];
+    
     for i = 1:9
         if i == 1
             find_StartPoint = (i-1)*fixDuration + calEndIndex;
@@ -37,10 +38,11 @@
         end
         
         fixStartIndex = fixIndices(1);
+        fixStartIndices = [fixStartIndices,fixStartIndex+fixSegStart];
         data(i,:,1) = rawX(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
         data(i,:,2) = rawY(fixStartIndex+fixSegStart : fixStartIndex+fixSegEnd);
     end
-    
+   
     % Plot Fixation points
     for iDot = 1:9
         scatter(data(iDot,:,1),data(iDot,:,2), 10, 'r')
@@ -49,4 +51,11 @@
     xlabel('X Position (au)');
     ylabel('Y Position (au)');
     title('Calibration vs Fixation Points');
+    
+    % DEBUG: Plot raw signal and segments
+    figure; hold on;
+    plot(rawX)
+    plot(rawY)
+    Y_LIMS = get(gca,'ylim');
+    plot([fixStartIndices;fixStartIndices],Y_LIMS, 'k--')
 end
