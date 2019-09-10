@@ -1,4 +1,4 @@
-function [aFrawX_, pFrawX_] = FixationFourierAnalysis(dataFFT,fixPoint)
+function [ampRet, powRet] = FixationFourierAnalysis(dataFFT,fixPoint)
     sFreq = 1024;
     
     if fixPoint == 0
@@ -39,6 +39,13 @@ function [aFrawX_, pFrawX_] = FixationFourierAnalysis(dataFFT,fixPoint)
     
     pFrawX_ = 20*log10(aFrawX_ / aFrawX_(1,1));
     pFrawY_ = 20*log10(aFrawY_ / aFrawY_(1,1));
+    
+    % Return these values
+    index = round(totTime) + 1;
+    ampRet(1,:) = aFrawX_(:,index);
+    powRet(1,:) = pFrawX_(:,index);
+    ampRet(2,:) = aFrawY_(:,index);
+    powRet(2,:) = pFrawY_(:,index);
     
     figure;
     hold on; 

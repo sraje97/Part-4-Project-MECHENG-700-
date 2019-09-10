@@ -1,6 +1,6 @@
-% clear;
+clear;
 clc;
-% close all;
+close all;
 
 %% Load File and Extract Data
 [filename,folder] = uigetfile('*.bdf');
@@ -53,7 +53,8 @@ if (filename(1:8) == "Fixation")
     [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f);
     [calMSD, dataMSD] = MeanSD(cal, data);
     [horDist, verDist] = CalibrationDistance(calMSD);
-    FixationFourierAnalysis(data,9);
+    [aC,pC] = FixationFourierAnalysis(cal,4);
+    [aF,pF] = FixationFourierAnalysis(data,9);
     disp('Plots and Results function here');
     
 elseif (filename(1:8) == "Tracking")
@@ -97,10 +98,10 @@ ylabel('Y Position (au)');
 title('X vs Y Displacement Data');
 view(0,90);
 
-figure;
-plot(Zraw_f,rawX_f);
-hold on
-plot(Zraw_f,rawY_f);
+% figure;
+% plot(Zraw_f,rawX_f);
+% hold on
+% plot(Zraw_f,rawY_f);
 
-figure;
-plot(trig_0_f);
+% figure;
+% plot(trig_0_f);
