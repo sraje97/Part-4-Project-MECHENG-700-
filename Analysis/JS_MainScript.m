@@ -50,12 +50,12 @@ end
 
 %% Fixation or Tracking Test
 if (filename(1:8) == "Fixation")
-    [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f);
-    [calMSD, dataMSD] = MeanSD(cal, data);
-    [horDist, verDist] = CalibrationDistance(calMSD);
-    [aC,pC] = FixationFourierAnalysis(cal,4);
-    [aF,pF] = FixationFourierAnalysis(data,9);
-    disp('Plots and Results function here');
+    disp('Fixation Analysis');
+    [cal, data] = SegmentFixationData(rawX_f, rawY_f, trig_0_f); % Segment cal and data points
+    [calMSD, dataMSD] = MeanSD(cal, data); % Mean/SD of cal and data points
+    [resX, resY] = CalibrationDistance(calMSD); % X-Y Resolution
+    [aC,pC] = FixationFourierAnalysis(cal,4); % Amp/Power of cal
+    [aF,pF] = FixationFourierAnalysis(data,9); % Amp/Power of data
     
 elseif (filename(1:8) == "Tracking")
     disp('Tracking Analysis');
