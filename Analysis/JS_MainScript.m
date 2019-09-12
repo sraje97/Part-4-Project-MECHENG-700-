@@ -58,14 +58,13 @@ if (filename(1:8) == "Fixation")
     disp('Plots and Results function here');
     
 elseif (filename(1:8) == "Tracking")
-    [cal, data] = SegmentTrackingData(rawX_f, rawY_f, trig_0_f);
-    [calMSD, dataMSD] = MeanSD(cal, data);
-    TrackingFrequencyAnalysisPlot(cal,data);
-    disp('Plots and Results function here');
+    disp('Tracking Analysis');
+    [cal, data] = SegmentTrackingData(rawX_f, rawY_f, trig_0_f); % Segment cal and data points
+    [calMSD, dataMSD] = MeanSD(cal, data); % Mean/SD of cal and data points
+    TrackingFrequencyAnalysisPlot(cal,data); % Plot raw and stimuli response
     
 else
     disp('Please choose Tracking or Fixation file.');
-%     return;
 end
 
 
