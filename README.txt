@@ -10,4 +10,6 @@ The files include:
 	- Trajectory Tests
 	- Analyses for each test (Fourier analysis, Gaze position, Calibration, etc.)
 
-The folder also includes a subfolder of a few subject's results following the tests.
+The folder also includes a subfolder, "FINAL", of a few subject's results following the tests.
+
+The final report and presentation are shown in the pdf and powerpoint slides respectively.
