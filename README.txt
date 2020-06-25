@@ -1,6 +1,6 @@
 MECHENG700 - P4P
 Eye-tracking System for Diagnosis of Visual Deficits
-Author: Sidhant Raje & Jerry Zhang
+Author: S. Raje & J. Zhang
 
 This contains all the MATLAB files used throughout the Part 4 project.
 The files include:
