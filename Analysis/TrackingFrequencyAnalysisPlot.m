@@ -44,7 +44,7 @@ function [gain, phase] = TrackingFrequencyAnalysisPlot(cal,data)
     legend('Stimulus (Calibrated)','Raw Tracking','Tracking FFT''d')
     title('Vertical Tracking Data - Blue Stimulus (Right Eye)')
 
-    % Vertical Blue
+    % Vertical Red
     figure; hold on; axis square
     plot(time,v_cal_amp * cos(2*pi*0.12*time)) % <-- CHECK CALIBRATION DOTS FOR AMP HERE
     plot(time,data(4,:,2))

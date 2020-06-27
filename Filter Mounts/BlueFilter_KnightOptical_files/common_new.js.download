@@ -1,0 +1,733 @@
+var nt, bt, buq, br;
+var ROOT = "";
+
+
+function basketShowRequest(formData, jqForm, options)
+{ 
+    $(jqForm).find("div.loading").show();
+    $(jqForm).find("button").css({opacity:0.2});
+    return true;
+}
+
+function basketShowResponse(responseText, statusText, xhr, jqForm)
+{
+    $(jqForm).find("div.loading").hide();
+    //$(jqForm).find("button").fadeIn("slow");
+    $(jqForm).find("button").css({opacity:1});
+
+    basketRefresh(true);
+}
+
+function basketUpdateQuantity(el, value)
+{
+	//alert($(el).val());
+	//alert($(el).attr("type"));
+	//alert(value);
+	// change to row?
+	clearTimeout(buq);
+	buq = setTimeout("basketUpdateQuantitySubmit()", 500);
+}
+function basketUpdateQuantitySubmit()
+{
+	//alert("Submitting mini");
+	//$("input.spinner.ajax").css({"visibility":"hidden"});
+	$("select.quantityselect").css({"visibility":"hidden"});
+	$("div.qloading").show();
+	$('form.utb').ajaxSubmit({url:ROOT + "/admin/ajax/basket/add.php", success:basketRefreshRun(false)});
+}
+
+function basketDeleteItem(id)
+{
+	$.post(ROOT + "/admin/ajax/basket/delete.php", {id: id}, function(data){
+		$("#basketmini #row_" + data).slideUp("fast", function(){
+			basketRefreshRun();
+		});
+	});
+}
+
+function basketLargeDeleteItem(id)
+{
+	$.post(ROOT + "/admin/ajax/basket/delete.php", {id: id}, function(data){
+		$("#largebasketcontainer #row_" + data).fadeOut("slow", function(){
+			basketRefreshRun(true);
+		});
+	});
+}
+
+function basketLargeUpdateQuantitySubmit()
+{
+	//alert("Submitting large");
+	//$("input.spinner.ajax").css({"visibility":"hidden"});
+	$("select.quantityselect").css({"visibility":"hidden"});
+	$("div.qloading").show();
+	$('form.utlb').ajaxSubmit({url:ROOT + "/admin/ajax/basket/add.php", success:basketRefreshRun(true)});
+}
+function basketRefreshRun(hideBasket)
+{
+	clearTimeout(br);
+	br = setTimeout("basketRefreshRunSubmit(" + hideBasket + ")", 500);
+}
+function basketRefreshRunSubmit(hideBasket)
+{
+	$("div.qloading").hide();
+	//$("input.spinner.ajax").css({"visibility":"visible"});
+	$("select.quantityselect").css({"visibility":"visible"});
+	basketLargeRefresh();
+	basketRefresh(false, hideBasket);
+}
+
+function basketLargeRefresh()
+{
+	//alert("Refreshing Large");
+
+	$.post(ROOT + "/admin/ajax/basket/view.php", {type: "normal"}, function(data){
+
+		//alert(data);
+		$('#largebasketcontainer').html(data);
+		//$('#largebasketcontainer input.spinner').spinit({ callback:basketLargeUpdateQuantity, height: 18, width: 40, min: 1, max: 99 });
+		$('#largebasketcontainer select.quantityselect').change(function() {
+			basketLargeUpdateQuantitySubmit();
+		});
+
+
+		$('a.deletelargebasket').bind('click', function() {
+			if(confirm("Are you sure you wish to delete this item from your bag?"))
+				basketLargeDeleteItem($(this).attr("id"));
+			return false;
+		});
+
+		basketLargeTotalsRefresh();
+
+		return true;
+
+	});
+}
+function basketLargeTotalsRefreshRun()
+{
+	clearTimeout(br);
+	br = setTimeout("basketLargeTotalsRefresh()", 500);
+}
+
+function basketLargeTotalsRefresh()
+{
+	$.post(ROOT + "/admin/ajax/basket/totals.php", function(data){
+
+		if(data)
+		{
+
+			$.post(ROOT + "/admin/ajax/basket/deliveryoptions.php", function(data){
+
+				if(data)
+				{
+					$("#deliveryoptions").html(data);
+					$('#deliveryoptions input[name=deliveryTypeId]').click(function() {
+						$('form.checkout').ajaxSubmit({data:{ updateDelivery:1 }, success:basketLargeTotalsRefreshRun()});
+					});
+				}
+
+				return true;
+
+			});
+
+			$('#totals').html(data);
+		}
+		else
+		{
+			$('#totals').slideUp("fast");
+		}
+
+		return true;
+
+	});
+}
+
+function basketRefresh(slideUp, hideBasket)
+{
+	// get product
+	// ensure scroll is kept
+	//alert("Refreshing Mini");
+
+	sa = $("#basketmini ul").scrollTop();
+
+	$('#topbasketcontainer').load(ROOT + "/admin/ajax/basket/view.php", {type:"mini"}, function() {
+
+		$("#basketmini ul").scrollTop(sa);
+
+		//$('#topbasketcontainer input.spinner').spinit({ callback:basketUpdateQuantity, height: 18, width: 35, min: 1, max: 99 });
+
+		$('#topbasketcontainer select.quantityselect').change(function() {
+			basketUpdateQuantitySubmit();
+		});
+
+		$('a.deletebasket').bind('click', function() {
+			basketDeleteItem($(this).attr("id"));
+			return false;
+		});
+
+		if(!hideBasket)
+		{
+			//$('#topbasket ul').css({'overflowY':'hidden'});
+			/*$('#topbasket').fadeIn("slow", function(){
+				//$('#topbasket ul').css({'overflowY':'auto'});
+			});*/
+
+			$('#basketmini').show();
+
+			positionBasket();
+			if(slideUp)
+				bt = setTimeout("$('#basketmini').slideUp('fast');", 5000);
+		}
+	});
+}
+
+
+function newWindow(url)
+{
+	var w = 980;
+	var h = 600;
+
+	LeftPosition=(screen.width)?(screen.width-w)/2:100;
+	TopPosition=(screen.height)?(screen.height-h)/2:100;
+
+	settings='width='+w+',height='+h+',top='+TopPosition+',left='+LeftPosition+',scrollbars=yes,' +
+		'location=no,directories=no,status=no,menubar=no,toolbar=no,resizable=yes';
+
+	var win= window.open(url,'newwindow',settings);
+}
+
+
+function rawnet_dropMenu()
+{
+	$("header nav ul li ul").css({display: "none"});
+	$("header nav ul li").hover(
+			function()
+			{
+				$(this).find('ul:first').slideDown("fast");
+			},
+			function()
+			{
+				$(this).find('ul:first').fadeOut("fast");
+			}
+	);
+}
+
+$(function() {
+		//rawnet_dropMenu();
+		var scache = {};
+		$("div.searchsite input[name=keyword]").autocomplete({
+			minLength: 2,
+			source: function(request, response) {
+				if(request.term in scache)
+				{
+					response(scache[request.term]);
+					return;
+				}
+
+				$.ajax({
+					url: ROOT + "/admin/ajax/search/suggest.php",
+					dataType: "json",
+					data: request,
+					success: function(data)
+					{
+						scache[request.term] = data;
+						response(data);
+					}
+				});
+			}
+		});
+
+		var basketFormOptions = {
+	        beforeSubmit:  basketShowRequest,
+	        success:       basketShowResponse,
+	 		url:       	   ROOT + "/admin/ajax/basket/add.php?p=1"
+	    };
+
+	    $('form.cn select').change(function() {
+	    	var uri = $(this).val();
+	    	var isCustom = $('form.cn #isCustom').val();
+
+	    	if(isCustom == 1)
+	    	{
+	    		uri = ROOT + "/custom/?category=" + uri.replace(ROOT + "/stock", "");
+	    	}
+
+    		if(uri != "")
+				document.location = uri;
+
+			return false;
+		});
+
+	    $('form.documentdownload').submit(function() {
+			window.open($(this).find("select").val());
+			return false;
+		});
+
+		$('form.atb').submit(function() {
+
+			// check quantity
+			var q = $(this).find("input[name='quantity']").val();
+			if(!jQuery.isNumeric(q))
+				alert("You must enter a numerical value of 1 or more");
+			else
+				$(this).ajaxSubmit(basketFormOptions);
+			return false;
+		});
+
+		$('form.checkout').submit(function() {
+			return validateVatNumber();
+		});
+		$('form.checkout #vatNumber').blur(function() {
+			return validateVatNumber();
+		});
+
+		$('#largebasketcontainer select.quantityselect').change(function() {
+		basketLargeUpdateQuantitySubmit();
+		});
+		$('#topbasketcontainer select.quantityselect').change(function() {
+			basketUpdateQuantitySubmit();
+		});
+
+		$('input[placeholder], textarea[placeholder]').placeholder();
+
+		if(!$.cookie("allowCookies"))
+		{
+			setTimeout(function(){
+			    $("#cookiesbanner").slideDown("slow");
+			},1000);
+		}
+
+		 $("#cookiesbanner a.button").on('click', function(e) {
+		    e.preventDefault();
+
+		    $.cookie("allowCookies", 1, { expires:365, path: '/' });
+		    $("#cookiesbanner").slideUp("slow");
+
+		});
+
+		 $(document).scroll(function() {
+		   positionBasket();
+		});
+
+		 $(".latestnews .ticker .stories ul").cycle({
+			    fx:     'scrollHorz',
+			    speed:  'slow',
+			    pause:   1,
+			    timeout: 6000,
+			    next:   '.latestnews .ticker .next',
+    			prev:   '.latestnews .ticker .prev'
+			});
+
+
+		 $("#headcontainer nav ul li.products").mouseenter( function(e)
+				{
+					clearTimeout(nt);
+					$("#productsnav").slideDown("fast");
+					$(this).addClass("hover");
+				}
+				).mouseleave( function(e)
+				{
+					var obj = $(this);
+					nt = setTimeout(function() {
+						$(obj).removeClass("hover");
+					    $('#productsnav').slideUp('fast');
+					}, 200);
+				}
+		);
+
+		$("#productsnav").mouseenter( function(e)
+				{
+					clearTimeout(nt);
+					$("#headcontainer nav ul li.products").addClass("hover");
+					$(this).show();
+				}
+				).mouseleave( function(e)
+				{
+					nt = setTimeout(function() {
+						$("#productsnav").slideUp("fast");
+						$("#headcontainer nav ul li.products").removeClass("hover");
+					}, 200);
+				}
+		);
+
+		$("header .searchsite input").bind('click', function(e)
+				{
+					$('#selectlang').hide(); // hide incase active
+					$('#basketmini').hide(); // hide incase active
+					clearTimeout(bt);
+				}
+		);
+
+		$("header .minibasket a.anchor").bind('click', function(e)
+				{
+					$('#selectlang').hide(); // hide incase active
+					$('#selectcurrency').hide(); // hide incase active
+					clearTimeout(bt);
+					$('#basketmini').slideToggle("fast");
+					return false;
+				}
+		);
+
+		$("a#attachmentadd").bind('click', function(e)
+				{
+					$("#attachmentclone").clone().insertAfter("#attachmentclone");
+				}
+		);
+
+		$("#basketmini").mouseenter( function(e)
+				{
+					clearTimeout(bt);
+					$(this).show();
+				}
+				).mouseleave( function(e)
+				{
+					clearTimeout(bt);
+					bt = setTimeout("$('#basketmini').slideUp('fast');", 2000);
+				}
+		);
+
+		$("header .currencyselect a.anchor").bind('click', function(e)
+				{
+					$('#basketmini').hide(); // hide incase active
+					$('#selectlang').hide(); // hide incase active
+					clearTimeout(bt);
+					$('#selectcurrency').slideToggle("fast");
+					return false;
+				}
+		);
+
+		$("#selectcurrency").mouseenter( function(e)
+				{
+					clearTimeout(bt);
+					$(this).show();
+				}
+				).mouseleave( function(e)
+				{
+					clearTimeout(bt);
+					bt = setTimeout("$('#selectcurrency').slideUp('fast');", 2000);
+				}
+		);
+
+		$("header .langselect a.anchor").bind('click', function(e)
+				{
+					$('#basketmini').hide(); // hide incase active
+					$('#selectcurrency').hide(); // hide incase active
+					clearTimeout(bt);
+					$('#selectlang').slideToggle("fast");
+					return false;
+				}
+		);
+
+		$("#selectlang").mouseenter( function(e)
+				{
+					clearTimeout(bt);
+					$(this).show();
+				}
+				).mouseleave( function(e)
+				{
+					clearTimeout(bt);
+					bt = setTimeout("$('#selectlang').slideUp('fast');", 2000);
+				}
+		);
+
+
+
+		$("#deliveryaddresscontainer button.findaddress").bind('click', function() {
+			$("#deliveryaddresscontainer .fulladdress").slideUp("fast");
+			var postcode = $("#deliveryaddresscontainer input.postcodelookup").val();
+			var countryId = $("#deliveryaddresscontainer select.country").val();
+
+			$("#deliveryaddresscontainer .output").load(ROOT + "/admin/ajax/basket/addresslookup.php", {countryId:countryId, postcode:postcode}, function() {
+
+				$("#deliveryaddresscontainer .output").show();
+				$('#deliveryaddresscontainer .output select').change(function() {
+
+					$.post(ROOT + "/admin/ajax/basket/getaddress.php", {postcode:postcode, countryId:countryId, id: $(this).val()}, function(data){
+						if(data)
+						{
+							$.each(data, function(index, value)
+							{
+							  $("#deliveryaddresscontainer input[name=d_" + index + "]").val(value);
+							});
+							$("#deliveryaddresscontainer .fulladdress").slideDown("fast");
+						}
+					}, "json");
+
+				});
+
+			});
+
+			return false;
+		});
+		$("#billingaddresscontainer button.findaddress").bind('click', function() {
+			$("#billingaddresscontainer .fulladdress").slideUp("fast");
+			var postcode = $("#billingaddresscontainer input.postcodelookup").val();
+			var countryId = $("#billingaddresscontainer select.country").val();
+
+			$("#billingaddresscontainer .output").load(ROOT + "/admin/ajax/basket/addresslookup.php", {countryId:countryId, postcode:postcode}, function() {
+
+				$("#billingaddresscontainer .output").show();
+				$('#billingaddresscontainer .output select').change(function() {
+
+					$.post(ROOT + "/admin/ajax/basket/getaddress.php", {postcode:postcode, countryId:countryId, id: $(this).val()}, function(data){
+						if(data)
+						{
+							$.each(data, function(index, value)
+							{
+							  $("#billingaddresscontainer input[name=b_" + index + "]").val(value);
+							});
+							$("#billingaddresscontainer .fulladdress").slideDown("fast");
+						}
+					}, "json");
+
+				});
+
+			});
+
+			return false;
+		});
+
+		$("#deliveryaddresscontainer a.toggle").bind('click', function() {
+			$("#deliveryaddresscontainer .output").hide();
+			$("#deliveryaddresscontainer .fulladdress").slideDown("fast");
+			$(this).html("Enter your address below");
+			return false;
+		});
+		$("#billingaddresscontainer a.toggle").bind('click', function() {
+			$("#billingaddresscontainer .output").hide();
+			$("#billingaddresscontainer .fulladdress").slideDown("fast");
+			$(this).html("Enter your address below");
+			return false;
+		});
+
+		$('#deliveryoptions input[name=deliveryTypeId]').click(function() {
+			$('form.checkout').ajaxSubmit({data:{ updateDelivery:1 }, success:basketLargeTotalsRefreshRun()});
+		});
+		$('form.checkout select.country').change(function() {
+			$('form.checkout').ajaxSubmit({data:{ updateShipping:1 }, success:basketLargeTotalsRefreshRun()});
+		});
+		$('form.checkout #sameasbilling').bind('click', function() {
+			$('#deliveryaddresscontainer').slideToggle();
+			$('form.checkout').ajaxSubmit({data:{ updateShipping:1 }, success:basketLargeTotalsRefreshRun()});
+		});
+
+		$("#product .imagery .main a.ignore").bind('click', function(){
+			$("#product .imagery ul.thumbshidden li a.thumb_0").click();
+			return false;
+		});
+
+		$("#product .imagery ul.thumbs li a.thumb").on("click", function() {
+
+			var id = $(this).attr("id");
+
+			$("#product .imagery .main img").attr("src", $(this).attr("href").replace("fullsize_", "medium_"));
+			$("#product .imagery .main a.ignore").bind('click', function(){
+				$("#product .imagery ul.thumbshidden li a.thumb_" + id).click();
+				return false;
+			});
+			return false;
+		});
+
+		$("a.newwindow").bind('click', function(){
+			newWindow($(this).attr("href"));
+			return false;
+		});
+
+		$('.fancybox').fancybox();
+
+		$("div.tabs").tabs();
+});
+
+
+function positionBasket()
+{
+	var position = $(window).scrollTop();
+
+    if(position > 43)
+    {
+        $("#basketmini").addClass('pinned');
+    }
+    else
+    {
+        $("#basketmini").removeClass('pinned')
+    }
+}
+
+/*!
+ * jQuery Cookie Plugin
+ * https://github.com/carhartl/jquery-cookie
+ *
+ * Copyright 2011, Klaus Hartl
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.opensource.org/licenses/GPL-2.0
+ */
+(function($) {
+    $.cookie = function(key, value, options) {
+
+        // key and at least value given, set cookie...
+        if (arguments.length > 1 && (!/Object/.test(Object.prototype.toString.call(value)) || value === null || value === undefined)) {
+            options = $.extend({}, options);
+
+            if (value === null || value === undefined) {
+                options.expires = -1;
+            }
+
+            if (typeof options.expires === 'number') {
+                var days = options.expires, t = options.expires = new Date();
+                t.setDate(t.getDate() + days);
+            }
+
+            value = String(value);
+
+            return (document.cookie = [
+                encodeURIComponent(key), '=', options.raw ? value : encodeURIComponent(value),
+                options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+                options.path    ? '; path=' + options.path : '',
+                options.domain  ? '; domain=' + options.domain : '',
+                options.secure  ? '; secure' : ''
+            ].join(''));
+        }
+
+        // key and possibly options given, get cookie...
+        options = value || {};
+        var decode = options.raw ? function(s) { return s; } : decodeURIComponent;
+
+        var pairs = document.cookie.split('; ');
+        for (var i = 0, pair; pair = pairs[i] && pairs[i].split('='); i++) {
+            if (decode(pair[0]) === key) return decode(pair[1] || ''); // IE saves cookies with empty string as "c; ", e.g. without "=" as opposed to EOMB, thus pair[1] may be undefined
+        }
+        return null;
+    };
+})(jQuery);
+
+// Validate VAT with VIES SOAP API
+// by Daniel Malkani
+function validateVatNumber()
+{
+    var vatCode = $('#vatNumberCountryCode').val();
+    var vatNumber = $("#vatNumber").val();
+
+	if(vatNumber != "")
+	{
+		if(checkVATNumberApi(vatCode,vatNumber)){
+			//returnType = true;
+            	$('form.checkout').ajaxSubmit({data:{ updateVat:1, vatNumberValidated:vatNumber }, success:basketLargeTotalsRefreshRun()});
+            }
+
+            if($('#sameasbilling')[0].checked){
+                if(vatCode != $("#b_country").val()){
+		    		alert("VAT country code and Shipping Address country code must be the same");
+				}
+            } else {
+                if(vatCode != $("#d_country").val()){
+                    alert("VAT country code and Shipping Address country code must be the same");
+                }
+            }
+	}
+
+	//$('form.checkout').ajaxSubmit({data:{ updateVat:1, vatNumberValidated:vatNumber }, success:basketLargeTotalsRefreshRun()});
+
+	//return returnType;
+}
+
+/*==============================================================================
+
+Application:   VAT VIES Checker
+Author:        Daniel Malkani
+
+
+------------------------------------------------------------------------------*/
+
+function checkVATNumberApi(vatCode,vatNumber){
+    $.ajax({
+        type: 'GET',
+        url: '/_engine/classes/vatCheck.php',
+        data: {countryCode: vatCode, vatNumber: vatNumber},
+        success: function(data){
+            //console.log(data);
+            if(data == true) {
+               //alert('Valid EU VAT');
+               console.log('Valid EU VAT');
+                $('form.checkout').ajaxSubmit({data:{ updateVat:1, vatNumberValidated:vatNumber }, success:basketLargeTotalsRefreshRun()});
+                //alert(vatNumber);
+            } else {
+            	console.log('Invalid VAT');
+                alert("Please enter a valid EU VAT number");
+                vatNumber = "";
+				clearVatFields();
+                $('form.checkout').ajaxSubmit({data:{ notValidVat:1}, success:basketLargeTotalsRefreshRun()});
+            }
+        },
+    });
+    //return returnType;
+}
+
+function EUVATCheckDigit (vatnumber) {
+
+  // We know litle about EU numbers apart from the fact that the first 3 digits
+  // represent the country, and that there are nine digits in total.
+  return true;
+}
+
+function clearVatFields (){
+    $('#vatNumberCountryCode').val('');
+    $("#vatNumber").val('');
+}
+
+function initDataTable()
+{
+	jQuery.fn.dataTableExt.aTypes.push(
+  		function ( sData )
+	    {
+	        var sValidChars = "0123456789.-,";
+	        var Char;
+
+	        /* Check the numeric part */
+	        for ( i=1 ; i<sData.length ; i++ )
+	        {
+	            Char = sData.charAt(i);
+	            if (sValidChars.indexOf(Char) == -1)
+	            {
+	                return null;
+	            }
+	        }
+
+	        /* Check prefixed by currency */
+	        if ( sData.charAt(0) == '$' || sData.charAt(0) == '£' || sData.charAt(0) == '€' )
+	        { 
+	            return 'currency'; 
+	        } 
+	        return null; 
+	    } 
+	);
+	 
+	jQuery.fn.dataTableExt.oSort['currency-asc'] = function(a,b) {
+	    /* Remove any commas (assumes that if present all strings will have a fixed number of d.p) */
+	    var x = a == "-" ? 0 : a.replace( /,/g, "" );
+	    var y = b == "-" ? 0 : b.replace( /,/g, "" );
+	     
+	    /* Remove the currency sign */
+	    x = x.substring( 1 );
+	    y = y.substring( 1 );
+	     
+	    /* Parse and return */
+	    x = parseFloat( x );
+	    y = parseFloat( y );
+	    return x - y;
+	};
+	 
+	jQuery.fn.dataTableExt.oSort['currency-desc'] = function(a,b) {
+	    /* Remove any commas (assumes that if present all strings will have a fixed number of d.p) */
+	    var x = a == "-" ? 0 : a.replace( /,/g, "" );
+	    var y = b == "-" ? 0 : b.replace( /,/g, "" );
+	     
+	    /* Remove the currency sign */
+	    x = x.substring( 1 );
+	    y = y.substring( 1 );
+	     
+	    /* Parse and return */
+	    x = parseFloat( x );
+	    y = parseFloat( y );
+	    return y - x;
+	};
+}

@@ -1,0 +1,56 @@
+#headcontainer, #subbannercontainer, #brochurebar, #subscribebar, footer, 
+.copyright img, .copyright ul, #catselector, button.button, a.button, a.pdf, .hideprint, .relatedpanel, .printbutton
+{
+	display:none;
+}
+#main .content
+{
+	width:100%;
+	padding-right:0;
+	border:0;
+}
+#main .sidebar
+{
+	display:none;
+}
+.copyright .logo
+{
+	background:#FFF;
+	color:#000;
+	padding-left:0;
+}
+
+.ps
+{
+	display:block;
+}
+
+#product
+{
+	width:100%;
+}
+#product .spec
+{
+	float:none;
+	width:auto;
+}
+#product .imagery
+{
+	display:none;
+}
+
+#productparts_wrapper
+{
+	display:none;
+}
+
+#main .content h1
+{
+	margin-bottom:20px;
+}
+
+#breadcrumb
+{
+	padding-left:0;
+	background:#FFF;
+}
